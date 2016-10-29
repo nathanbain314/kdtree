@@ -12,7 +12,7 @@ class node
     vector<int> _point;
     int _axis, _value;
     node *_left, *_right;
-    node( vector<int> &point );
+    node( int value, vector<int> &point );
     node( int axis, int value, node *left, node *right );
 };
 
@@ -32,5 +32,5 @@ class sum
     int operator()(int i, vector<int> j);
 };
 
-node* kd_tree( vector< vector< int > > change_vec );
+node* kd_tree( vector< pair< int, vector< int > > > change_vec );
 void nns(vector<int> &q, node &n, int &p, int &w);

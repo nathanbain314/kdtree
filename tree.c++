@@ -1,8 +1,9 @@
 #include "tree.h"
 
-node::node( vector<int> &point )
+node::node( int value, vector<int> &point )
 {
   _axis = -1;
+  _value = value;
   _point = point;
 }
 
@@ -24,18 +25,19 @@ int sum::operator()(int i, vector<int> j)
   return i + j[param];;
 }
 
-// Takes in a vector of image points and returns the first node of a kd tree
-node* kd_tree( vector< vector< int > > change_vec )
+// Takes in a vector of pairs of image ids and image points and returns the first node of a kd tree
+node* kd_tree( vector< pair< int, vector< int > > > change_vec )
 {
+  int dimensions = change_vec[0].second.size();
   int size = change_vec.size();
   
   if(size > 1)
   {
-    int result[3];
-    int avg_arr[3];
+    int result[dimensions];
+    int avg_arr[dimensions];
     int avg;
 
-    for(int axis = 0; axis < 3; ++axis)
+    for(int axis = 0; axis < dimensions; ++axis)
     {
       sort(change_vec.begin(), change_vec.end(), cmp(axis) );
       avg = accumulate( change_vec.begin(), change_vec.end(), 0, sum(axis) ) / size;
@@ -46,7 +48,7 @@ node* kd_tree( vector< vector< int > > change_vec )
     int value = INT_MIN;
     int axis;
 
-    for(int i = 0; i < 3; ++i)
+    for(int i = 0; i < dimensions; ++i)
     {
       if( result[i] > value )
       {
@@ -60,7 +62,7 @@ node* kd_tree( vector< vector< int > > change_vec )
   }
   else
   {
-    return new node( change_vec[0]);
+    return new node( change_vec[0].first, change_vec[0]);
   }
 }
 
@@ -70,11 +72,15 @@ void nns(vector<int> &q, node &n, int &p, int &w)
 {
   if( n._axis < 0 )
   {
-    int _w = (q[0]-n._point[0])*(q[0]-n._point[0]) + (q[1]-n._point[1])*(q[1]-n._point[1]) + (q[2]-n._point[2])*(q[2]-n._point[2]);
+    int _w = 0;
+    for( int i = n._point.size() - 1; i >= 0; --i )
+    {
+      _w += (q[i] - n._point[i])*(q[i] - n._point[i]);
+    }
     if( _w < w)
     {
       w = _w;
-      p = n._point[3];
+      p = n._value;
     }
   }
   else
