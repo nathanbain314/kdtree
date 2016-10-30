@@ -15,14 +15,14 @@ node::node( int axis, int value, node *left, node *right )
   _right = right;
 }
 
-bool cmp::operator()(vector<int> i, vector<int> j)
+bool cmp::operator()(pair< int, vector< int > > i, pair< int, vector< int > > j)
 {
-  return i[param] < j[param];
+  return (i.second)[param] < (j.second)[param];
 }
 
-int sum::operator()(int i, vector<int> j)
+int sum::operator()(int i, pair< int, vector< int > > j)
 {
-  return i + j[param];;
+  return i + (j.second)[param];;
 }
 
 // Takes in a vector of pairs of image ids and image points and returns the first node of a kd tree
@@ -41,8 +41,8 @@ node* kd_tree( vector< pair< int, vector< int > > > change_vec )
     {
       sort(change_vec.begin(), change_vec.end(), cmp(axis) );
       avg = accumulate( change_vec.begin(), change_vec.end(), 0, sum(axis) ) / size;
-      avg_arr[ axis ] = (change_vec[size/2-1][axis] + change_vec[size/2][axis])/2;
-      result[ axis ] = change_vec[size-1][axis] - change_vec[0][axis];
+      avg_arr[ axis ] = ((change_vec[size/2-1].second)[axis] + (change_vec[size/2].second)[axis])/2;
+      result[ axis ] = (change_vec[size-1].second)[axis] - (change_vec[0].second)[axis];
     }
 
     int value = INT_MIN;
@@ -58,11 +58,11 @@ node* kd_tree( vector< pair< int, vector< int > > > change_vec )
     }
     sort(change_vec.begin(), change_vec.end(), cmp(axis));
 
-    return new node( axis, avg_arr[axis], kd_tree( vector< vector<int> >(change_vec.begin(), change_vec.begin() + size/2 ) ), kd_tree( vector< vector<int> >(change_vec.begin() + size/2, change_vec.end()) ));
+    return new node( axis, avg_arr[axis], kd_tree( vector< pair< int, vector< int > > >(change_vec.begin(), change_vec.begin() + size/2 ) ), kd_tree( vector< pair< int, vector< int > > >(change_vec.begin() + size/2, change_vec.end()) ));
   }
   else
   {
-    return new node( change_vec[0].first, change_vec[0]);
+    return new node( change_vec[0].first, change_vec[0].second);
   }
 }
 

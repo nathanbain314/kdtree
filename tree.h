@@ -21,7 +21,7 @@ class cmp
   int param;
   public:
     cmp( int _param ) : param(_param) {}
-    bool operator()(vector<int> i, vector<int> j);
+    bool operator()(pair< int, vector< int > > i, pair< int, vector< int > > j);
 };
 
 class sum
@@ -29,7 +29,7 @@ class sum
   int param;
   public:
     sum( int _param ) : param(_param) {}
-    int operator()(int i, vector<int> j);
+    int operator()(int i, pair< int, vector< int > > j);
 };
 
 node* kd_tree( vector< pair< int, vector< int > > > change_vec );
